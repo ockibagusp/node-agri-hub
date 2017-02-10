@@ -25,16 +25,19 @@ class AgriHubAPI:
         conn.request('POST', '/node-auth/', data, self.headers)
         res = conn.getresponse()
         if 200 == res.status:
+            print 'AUTH: ok'
             res_data = json.loads(res.read())
+            conn.close()
             self.credential_model.set(res_data.get('token'), res_data.get('node')['subsperdayremain'])
         else:  # 400
-            print 'TODO simpan error di log'
-        conn.close()
+            conn.close()
+            # TODO simpan error di log
+            exit('AUTH: failure')
 
     def subscribe(self):
         credential = self.credential_model.get()
         # if node has no remaining subs, then ignore it
-        if 0 == credential[1] or -1 != credential[1]:
+        if 0 == credential[1]:
             return
         conn = self.createconnection()
         sensors = self.settings.get('node')['sensors']
@@ -44,15 +47,24 @@ class AgriHubAPI:
             "sensor": [],
             "testing": True
         }
-        for sensor in sensors[0]:
+
+        for sensor in sensors:
             # TODO data should captured with sensor module
             data_raw.get('sensor').append({
                 "label": sensor,
                 "data": random.randint(100, 999)
             })
-        # TODO sent new auth() when token is expired
+
         self.headers.update({'Authorization': "JWT %s" % (credential[0])})
         conn.request('POST', '/subscriptions/', json.dumps(data_raw), self.headers)
         res = conn.getresponse()
-        print res.read()
 
+        # sent new auth() when token is expired
+        if 401 == res.status:
+            print "Subs status: 401"
+            print res.read()
+            print "Renew token..."
+            self.auth()
+            self.subscribe()
+        else:
+            print "Subs status: 200 (ok)"
