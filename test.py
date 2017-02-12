@@ -20,7 +20,7 @@ print "Get credentials data"
 creds.get()
 
 """
-SubsScedule Model
+SubsScedule Model -> pass
 """
 subs = SubsScedule()
 print "Credentials Model Test"
