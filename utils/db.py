@@ -30,7 +30,7 @@ class Db:
             ")"
         sql_query_subs_scedule = "CREATE TABLE IF NOT EXISTS `subs_schedule` (" \
             "`id`	INTEGER," \
-            "`datetime`	TEXT," \
+            "`time`	TEXT," \
             "PRIMARY KEY(`id`))"
         self.cursor.execute(sql_query_credentials)
         self.cursor.execute(sql_query_subs_scedule)
