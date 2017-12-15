@@ -34,7 +34,7 @@ class AgriHubAPI:
             # TODO simpan error di log
             exit('AUTH: failure')
 
-    def publish(self, testing=True):
+    def publish(self, testing=False):
         # konfigurasi diambil dari settings.json
         credential = self.credential_model.get()
         conn = self.createconnection()
