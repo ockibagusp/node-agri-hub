@@ -19,8 +19,8 @@ class AgriHubAPI:
         conn = self.createconnection()
         data = json.dumps({
             "user": self.settings.get('user'),
-            "label": self.settings.get('node')['label'],
-            "secretkey": self.settings.get('node')['secretkey']
+            "label": self.settings.get('supernode')['label'],
+            "secretkey": self.settings.get('supernode')['secretkey']
         })
         conn.request('POST', '/node-auth/', data, self.headers)
         res = conn.getresponse()
@@ -28,35 +28,51 @@ class AgriHubAPI:
             print 'AUTH: ok'
             res_data = json.loads(res.read())
             conn.close()
-            self.credential_model.set(res_data.get('token'), res_data.get('node')['subsperdayremain'])
+            self.credential_model.set(res_data.get('token'))
         else:  # 400
             conn.close()
             # TODO simpan error di log
             exit('AUTH: failure')
 
-    def subscribe(self):
+    def publish(self, testing=True):
+        # konfigurasi diambil dari settings.json
         credential = self.credential_model.get()
-        # if node has no remaining subs, then ignore it
-        if 0 == credential[1]:
-            return
         conn = self.createconnection()
-        sensors = self.settings.get('node')['sensors']
+        nodes = self.settings.get('supernode')['nodes']
         data_raw = {
-            "user": self.settings.get('user'),
-            "node": self.settings.get('node')['label'],
-            "sensor": [],
-            "testing": True
+            "label": self.settings.get('supernode')['label'],
+            "nodes": [],
+            "testing": testing
         }
 
-        for sensor in sensors:
+        for node in nodes:
             # TODO data should captured with sensor module
-            data_raw.get('sensor').append({
-                "label": sensor,
-                "data": random.randint(100, 999)
-            })
+            _node = {
+                "id": node.get('id'),
+                "format": self.settings.get('format'),
+                "sensors": []
+            }
 
+            for sensor in node.get('sensors'):
+                _sensor = {
+                    "label": sensor,
+                    "value": []
+                }
+
+                for i in range(3):
+                    _sensor.get("value").append([
+                        random.randint(100, 999), #  random data
+                        1509426290
+                    ])
+
+                _node.get('sensors').append(_sensor)
+
+            data_raw.get('nodes').append(_node)
+
+        print "---- data yang dikirim ---"
+        print json.dumps(data_raw)
         self.headers.update({'Authorization': "JWT %s" % (credential[0])})
-        conn.request('POST', '/subscriptions/', json.dumps(data_raw), self.headers)
+        conn.request('POST', '/sensordatas/', json.dumps(data_raw), self.headers)
         res = conn.getresponse()
 
         # sent new auth() when token is expired
@@ -65,6 +81,6 @@ class AgriHubAPI:
             print res.read()
             print "Renew token..."
             self.auth()
-            self.subscribe()
+            self.publish()
         else:
             print "Subs status: 200 (ok)"

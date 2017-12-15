@@ -17,11 +17,11 @@ class Credentials(Db):
         self.cursor.execute("SELECT * FROM `credentials`")
         return self.cursor.fetchone()
 
-    def set(self, token, subsperdayremain):
+    def set(self, token):
         self.cursor.execute("DELETE FROM `credentials`")
         self.cursor.execute(
             "INSERT INTO `credentials` "
             "VALUES(:token, :subsperdayremain)",
-            {"token": token, "subsperdayremain": subsperdayremain }
+            {"token": token, "subsperdayremain": 100}
         )
         self.conn.commit()

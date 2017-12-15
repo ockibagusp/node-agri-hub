@@ -1,13 +1,18 @@
 {
-  "api_url": "localhost:8080",
-  "user": "basukicahya",
-  "node": {
-    "label": "FILKOM_1",
-    "secretkey": "rahasia",
-    "sensors": [
-      "TEMP",
-      "HUMIDITY",
-      "RADIANCE"
+  "api_url": "128.199.134.116:8080",
+  "user": "subali",
+  "supernode": {
+    "label": "UB",
+    "secretkey": "rahasia123",
+    "nodes": [
+      {
+        "id": "59f22237d4b273000de3672e",
+        "sensors": [
+          "TEMP",
+          "HUMIDITY"
+        ]
+      }
     ]
-  }
+  },
+  "format" : ["data", "timestamp"]
 }

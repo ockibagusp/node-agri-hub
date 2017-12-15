@@ -22,7 +22,7 @@ class AgriHubNode:
     def action_start(self):
         self.agri_hub.auth()
         # TODO loop forever! Call .subscribe() based on schedule
-        self.agri_hub.subscribe()
+        self.agri_hub.publish()
 
     def run(self):
         if 2 is not len(sys.argv):

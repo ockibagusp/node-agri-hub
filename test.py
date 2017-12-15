@@ -13,8 +13,7 @@ print "Set expired token"
 creds.set(
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
     "eyJzdWJzcGVyZGF5IjoyMCwiaWQiOjEsImV4cCI6MTQ3ODA2NTQwNiwibGFiZWwiOiJGSUxLT01fMSJ9."
-    "GV0JQ2Ii0hfipLMo7r1t-T3Sy1rE_1yujB9c75zFqDc",
-    20
+    "GV0JQ2Ii0hfipLMo7r1t-T3Sy1rE_1yujB9c75zFqDc"
 )
 print "Get credentials data"
 creds.get()
@@ -23,7 +22,7 @@ creds.get()
 SubsScedule Model -> pass
 """
 subs = SubsScedule()
-print "Credentials Model Test"
+print "\nCredentials Model Test"
 print "======================"
 print "Create new subs date"
 subs.create(
@@ -48,6 +47,6 @@ print "\nHttp lib Test"
 print "======================"
 api = AgriHubAPI()
 print "Subs sensor data"
-api.subscribe()
+api.publish()
 print "Auth test"
 api.auth()
